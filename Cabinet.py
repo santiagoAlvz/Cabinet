@@ -1,7 +1,10 @@
 from exif import Image
 from geopy.geocoders import Nominatim
+import os
 
-geoLoc = Nominatim(user_agent="GetLoc")
+base_dir = 'TestFiles'
+
+geoloc = Nominatim(user_agent="GetLoc")
 
 #Converts the coordinates to decimal
 def decimal_coords(coords, ref):
@@ -29,20 +32,26 @@ def image_information(image_path):
         
     return({"datetime":img.datetime_original, "latitude":coords[0],"longitude":coords[1]})
 
-#Analyze an image
-info = image_information('TestFiles/IMG20240706113148.jpg')
-location = geoLoc.reverse(str(info["latitude"]) + "," + str(info["longitude"])).raw['address']
+for file in os.listdir(base_dir):
+    if file.endswith(".jpg"):
 
-country = location['country']
-county = location['county']
+        #Analyze an image
+        info = image_information(base_dir + "/" + file)
+        location = geoloc.reverse(str(info["latitude"]) + "," + str(info["longitude"])).raw['address']
 
-#print(location)
+        country = location['country']
+        county = "NA"
 
-if 'city' in location:
-    place = location["city"]
-elif 'town' in location:
-    place = location["town"]
-elif 'village' in location:
-    place = location["village"]
+        if 'county' in location:
+            county = location['county']
 
-print(place + ", " + county + ", " + country)
+        place = "NA"
+        if 'city' in location:
+            place = location["city"]
+        elif 'town' in location:
+            place = location["town"]
+        elif 'village' in location:
+            place = location["village"]
+
+        #print(location)
+        print(file + ": " +place + ", " + county + ", " + country + "\n")
