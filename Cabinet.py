@@ -1,4 +1,7 @@
 from exif import Image
+from geopy.geocoders import Nominatim
+
+geoLoc = Nominatim(user_agent="GetLoc")
 
 #Converts the coordinates to decimal
 def decimal_coords(coords, ref):
@@ -27,4 +30,19 @@ def image_information(image_path):
     return({"datetime":img.datetime_original, "latitude":coords[0],"longitude":coords[1]})
 
 #Analyze an image
-print(image_information('TestFiles/IMG20231019141657.jpg'))
+info = image_information('TestFiles/IMG20240706113148.jpg')
+location = geoLoc.reverse(str(info["latitude"]) + "," + str(info["longitude"])).raw['address']
+
+country = location['country']
+county = location['county']
+
+#print(location)
+
+if 'city' in location:
+    place = location["city"]
+elif 'town' in location:
+    place = location["town"]
+elif 'village' in location:
+    place = location["village"]
+
+print(place + ", " + county + ", " + country)
