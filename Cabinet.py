@@ -28,30 +28,37 @@ def image_information(image_path):
         except AttributeError:
             print ('No Coordinates Available')
     else:
-        print ('The Image has no EXIF information')
+        print('The Image has no EXIF information')
         
-    return({"datetime":img.datetime_original, "latitude":coords[0],"longitude":coords[1]})
+    return({"year":img.datetime_original.split(":")[0], "latitude":coords[0],"longitude":coords[1]})
 
 for file in os.listdir(base_dir):
     if file.endswith(".jpg"):
 
         #Analyze an image
         info = image_information(base_dir + "/" + file)
-        location = geoloc.reverse(str(info["latitude"]) + "," + str(info["longitude"])).raw['address']
+        location = geoloc.reverse(str(info["latitude"]) + "," + str(info["longitude"]), language="es").raw['address']
 
         country = location['country']
-        county = "NA"
+
+        #Get the county of the location
+        county = None
 
         if 'county' in location:
             county = location['county']
 
-        place = "NA"
+        #Get the town of the location
+        town = None
         if 'city' in location:
-            place = location["city"]
+            town = location["city"]
         elif 'town' in location:
-            place = location["town"]
+            town = location["town"]
         elif 'village' in location:
-            place = location["village"]
+            town = location["village"]
 
         #print(location)
-        print(file + ": " +place + ", " + county + ", " + country + "\n")
+
+        if county is not None:
+            print(file + ": " + county + ", " + country + " (" + info["year"] + ")")
+        else:
+            print(file + ": " + town + ", " + country + " (" + info["year"] + ")")
