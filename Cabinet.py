@@ -37,7 +37,8 @@ for file in os.listdir(base_dir):
 
         #Analyze an image
         info = image_information(base_dir + "/" + file)
-        location = geoloc.reverse(str(info["latitude"]) + "," + str(info["longitude"]), language="es").raw['address']
+        location = geoloc.reverse(str(info["latitude"]) + "," + str(info["longitude"]), language="en").raw['address']
+        
 
         country = location['country']
 
