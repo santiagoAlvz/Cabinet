@@ -4,6 +4,7 @@ import os
 import shutil
 from unidecode import unidecode
 
+# Arguments
 image_dir = 'TestFiles'
 destination_dir = 'SortedFiles'
 
@@ -35,9 +36,10 @@ def image_information(image_path):
         
     return({"coordinates":True, "year":img.datetime_original.split(":")[0], "latitude":coords[0],"longitude":coords[1]})
 
+# Makes the path to which copy the image based on its metadata
 def make_path(info):
     if info["coordinates"]:
-        location = geoloc.reverse(str(info["latitude"]) + "," + str(info["longitude"]), language="en").raw['address']
+        location = geoloc.reverse(f"{str(info['latitude'])},{str(info['longitude'])}", language="en").raw['address']
 
         country = location['country']
 
@@ -71,21 +73,26 @@ def make_path(info):
 
     return path
 
-for file in os.listdir(image_dir):
-    if file.endswith(".jpg"):
+def main():
+    for file in os.listdir(image_dir):
+        if file.endswith(".jpg"):
 
-        #Analyze an image
-        try:
-            info = image_information(image_dir + "/" + file)
+            #Analyze an image and generate its path
+            try:
+                info = image_information(image_dir + "/" + file)
+                path = make_path(info)
 
-            path = make_path(info)
+            # If there's no EXIF metadata available, copy it to the unknown subfolder
+            except:
+                print(f"Error. Image {file} couldn't be classified. Moving to {destination_dir}/Unknown/")
+                os.makedirs(os.path.dirname(f"{destination_dir}/Unknown/"), exist_ok=True)
+                shutil.copyfile(f"{image_dir}/{file}", f"{destination_dir}/Unknown/{file}")
+            
+            # 
+            else:
+                print(path)
+                os.makedirs(os.path.dirname(path + '/'), exist_ok=True)
+                shutil.copyfile(f"{image_dir}/{file}", f"{path}/{file}")
 
-        except:
-            print(f"Error. Image {file} couldn't be classified. Moving to {destination_dir}/Unknown/")
-            os.makedirs(os.path.dirname(f"{destination_dir}/Unknown/"), exist_ok=True)
-            shutil.copyfile(f"{image_dir}/{file}", f"{destination_dir}/Unknown/{file}")
-        
-        else:
-            print(path)
-            os.makedirs(os.path.dirname(path + '/'), exist_ok=True)
-            shutil.copyfile(f"{image_dir}/{file}", f"{path}/{file}")
+if __name__ == '__main__':
+    main()
