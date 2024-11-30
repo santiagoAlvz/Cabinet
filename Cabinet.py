@@ -1,5 +1,6 @@
 from exif import Image
 from geopy.geocoders import Nominatim
+from datetime import datetime
 import os
 import shutil
 from unidecode import unidecode
@@ -77,7 +78,7 @@ def main():
     copied = 0
 
     for file in os.listdir(image_dir):
-        if file.endswith(".jpg"):
+        if file.endswith((".jpg", ".mp4")):
 
             #Analyze an image and generate its path
             try:
