@@ -6,8 +6,8 @@ import shutil
 from unidecode import unidecode
 
 # Arguments
-image_dir = 'TestFiles'
-destination_dir = 'SortedFiles'
+image_dir = ''
+destination_dir = ''
 
 geoloc = Nominatim(user_agent="GetLoc")
 
@@ -31,6 +31,8 @@ def image_information(image_path):
                       decimal_coords(img.gps_longitude,
                       img.gps_longitude_ref))
         except AttributeError:
+
+            # There is EXIF date Information, but no coordinates
             return({"coordinates":False, "year":img.datetime_original.split(":")[0]})
     else:
         raise Exception("The Image has no EXIF information")
@@ -78,7 +80,7 @@ def main():
     copied = 0
 
     for file in os.listdir(image_dir):
-        if file.endswith((".jpg", ".mp4")):
+        if file.endswith((".jpg", ".JPG", ".mp4")):
 
             #Analyze an image and generate its path
             try:
@@ -112,8 +114,9 @@ def main():
 
     # Write the copying date into the record, for reference purpose when making future copyings
     file = open(f"{destination_dir}/CabinetHistory.txt", "a")
-    record = f"{datetime.now()}, {copied} images copied"
-    file.write()
+    record = f"\n{datetime.now()}, {copied} images copied"
+    file.write(record)
+    file.close()
 
 if __name__ == '__main__':
     main()
