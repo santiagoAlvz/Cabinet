@@ -13,6 +13,8 @@ destination_dir = '/home/santiago/Proyectos/Cabinet/SortedFiles'
 
 geoloc = Nominatim(user_agent="GetLoc")
 
+ImageRecord.connect(destination_dir)
+
 #Converts the coordinates to decimal
 def decimal_coords(coords, ref):
     decimal_degrees = coords[0] + coords[1] / 60 + coords[2] / 3600
