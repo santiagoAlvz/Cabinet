@@ -13,7 +13,7 @@ destination_dir = '/home/santiago/Proyectos/Cabinet/SortedFiles'
 
 geoloc = Nominatim(user_agent="GetLoc")
 
-ImageRecord.connect(destination_dir)
+ImageRecord.connect(image_dir, destination_dir)
 
 #Converts the coordinates to decimal
 def decimal_coords(coords, ref):
@@ -85,9 +85,11 @@ def main():
 
     for file in os.listdir(image_dir):
         if file.endswith((".jpg", ".JPG", ".mp4")):
-            hash = ImageRecord.get_hash(image_dir + "/" + file)
-
-            print(file + ': ' + hash)
+            if ImageRecord.verify(file):
+                print(f'File {file} will be copied')
+            else:
+                print(f'File {file} already in destination')
+            
             '''
             #Analyze an image and generate its path
             try:
@@ -124,6 +126,7 @@ def main():
     record = f"\n{datetime.now()}, {copied} images copied"
     file.write(record)
     file.close()'''
+    ImageRecord.close()
 
 if __name__ == '__main__':
     main()
