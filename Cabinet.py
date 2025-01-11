@@ -4,12 +4,18 @@ from datetime import datetime
 import os
 import shutil
 from unidecode import unidecode
+import hashlib
 
 # Arguments
-image_dir = ''
-destination_dir = ''
+image_dir = '/home/santiago/Proyectos/Cabinet/TestFiles'
+destination_dir = '/home/santiago/Proyectos/Cabinet/SortedFiles'
 
 geoloc = Nominatim(user_agent="GetLoc")
+
+def get_hash(image_path):
+    with open(image_path, "rb") as f:
+        hash = hashlib.sha256(f.read()).hexdigest()
+    return hash
 
 #Converts the coordinates to decimal
 def decimal_coords(coords, ref):
@@ -81,7 +87,10 @@ def main():
 
     for file in os.listdir(image_dir):
         if file.endswith((".jpg", ".JPG", ".mp4")):
+            hash = get_hash(image_dir + "/" + file)
 
+            print(file + ': ' + hash)
+            '''
             #Analyze an image and generate its path
             try:
                 info = image_information(image_dir + "/" + file)
@@ -116,7 +125,7 @@ def main():
     file = open(f"{destination_dir}/CabinetHistory.txt", "a")
     record = f"\n{datetime.now()}, {copied} images copied"
     file.write(record)
-    file.close()
+    file.close()'''
 
 if __name__ == '__main__':
     main()
