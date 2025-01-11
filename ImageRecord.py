@@ -52,8 +52,7 @@ def verify(file):
     # Check if file with the same name exists
     cur.execute(f'''SELECT EXISTS (SELECT 1 FROM Image WHERE fileName = '{file}' LIMIT 1);''')
     
-    if cur.fetchone is True:
-        print('Image Exists!')
+    if cur.fetchone()[0] == 1:
         return False
     else:
         return add_to_db(file)
