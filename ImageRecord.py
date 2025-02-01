@@ -80,4 +80,5 @@ def close(copied_files):
     cur.execute(f'''UPDATE  Execution
                     SET copied = {copied_files}
                     WHERE id = {current_execution_id}''')
+    conn.commit()
     conn.close()
