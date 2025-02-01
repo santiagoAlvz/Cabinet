@@ -65,7 +65,7 @@ def add_to_db(file):
                             '{file}',
                             {current_execution_id})''')
     except:
-        print(f"An image identical to {file} already exists in the destination!")
+        print(f"- An image identical to {file} already exists in the destination!")
         return False
 
     conn.commit()
@@ -76,5 +76,8 @@ def get_image_hash(file):
         hash = hashlib.sha256(f.read()).hexdigest()
     return hash
 
-def close():
+def close(copied_files):
+    cur.execute(f'''UPDATE  Execution
+                    SET copied = {copied_files}
+                    WHERE id = {current_execution_id}''')
     conn.close()
