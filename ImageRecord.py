@@ -1,21 +1,17 @@
 import hashlib
 import sqlite3
 import os
+from Config import *
 
 db_file = "Cabinet.db"
 conn = None
 cur = None
-image_dir = None
-destination_dir = None
 current_execution_id = None
 transaction_count = 0
 
 # Tries to connect with SQLite database on the destination directory
 def connect(images, destination):
-    global image_dir, destination_dir, conn, cur, current_execution_id
-
-    image_dir = images
-    destination_dir = destination
+    global conn, cur, current_execution_id
 
     # If the database file doesn't exist (first run), create its
     if(not os.path.isfile(f"{destination_dir}/{db_file}")):
@@ -72,11 +68,10 @@ def add_to_db(file):
     except:
         print(f"- An image identical to {file} already exists in the destination!")
         return False
-
+    
     transaction_count += 1
 
-    if transaction_count % 20 == 0:
-        print(transaction_count)
+    if transaction_count % 20 == 1:
         conn.commit()
 
     return True

@@ -9,8 +9,13 @@ from Config import *
 def main():
     copied = 0
 
-    for file in os.listdir(image_dir):
+    files = os.listdir(image_dir)
+
+    for i, file in enumerate(files):
         if file.endswith((".jpg", ".JPG", ".jpeg", ".JPEG")):
+            print(f"[{i + 1}/{len(files)}] ", end='')
+
+            # If the file isn't in the destination folder
             if ImageRecord.verify(file):
 
                 #Analyze an image and generate its path
@@ -27,17 +32,21 @@ def main():
 
                     copied += 1
                 
-                # If an image with the same name or identical hash exists in the destination, skip
+                # Copy the image to the path generated with its metadata
                 else:
                     print(f"Copying image {file} to {path}")
                     os.makedirs(os.path.dirname(path + '/'), exist_ok=True)
+                    
                     shutil.copyfile(f"{image_dir}/{file}", f"{path}/{file}")
 
                     copied += 1
             else:
                 print(f'- File {file} already in destination')
         
+        # MP4 videos can't be properly classified, but copy them anyways
         elif file.endswith((".mp4", ".MP4")):
+            print(f"[{i + 1}/{len(files)}] ", end='')
+
             if ImageRecord.verify(file):
                 print(f"Copying file {file} to {destination_dir}/Unknown/")
                 os.makedirs(os.path.dirname(f"{destination_dir}/Unknown/"), exist_ok=True)
