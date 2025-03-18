@@ -18,7 +18,7 @@ There are 3 possible scenarios for classifying any given image, based on the inf
 
 As images are processed, their new path is printed. If there's any issue as it is also printed.
 
-In the destination folder, the `CabinetHistory.txt` file is created and added a line with the execution datetime and the number of images copied. In subsequent runs to the same destination, new lines will be added to this file.
+In the destination folder, the `Cabinet.sqlite` database is created, if it doesn't exist already, to keep the names and hashes of images copied into the destination. Subsequent runs with the same destination will use this database to identify images already in the destination (even if they've been manually reclassified), and append new records to this database.
 
 ## Considerations
 So far, only .jpg images and .mp4 videos are supported, as Cabinet relies on EXIF data. Note that not all mp4 files contain EXIF data. The whole script is built considering images taken with smartphones, which are mostly stored in these formats.
